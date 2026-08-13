@@ -224,86 +224,77 @@
 </head>
 <body>
 
-<div class="progress" id="progress">🤍🤍🤍🤍🤍</div>
+<div class="progress" id="progress">🤍🤍🤍🤍</div>
 
 <!-- ============ STAGE 1: INTRO ============ -->
 <div class="card active" id="stage-intro">
   <span class="big-emoji wiggle" id="eyes">😳</span>
   <h1>Mahak... <span class="glow">I've got a question</span> for you 👀</h1>
-  <p>But asking directly is too easy. So I built you a <strong>whole little game</strong> instead. Because you deserve effort. 😌</p>
+  <p>Asking directly felt too easy. So I made you a tiny game. Three stages, two minutes of your time. Deal? 😌</p>
   <div class="typewriter" id="typewriter"></div>
-  <button class="btn" id="btnStart">Begin the challenge 💘</button>
-  <div class="hint">5 stages. Zero chance of escape. You were warned. 😏</div>
+  <button class="btn" id="btnStart">Alright, let's see →</button>
+  <div class="hint">Takes 2 minutes. Worst case, you win.</div>
 </div>
 
 <!-- ============ STAGE 2: CATCH THE HEARTS ============ -->
 <div class="card" id="stage-hearts">
   <span class="big-emoji bounce">🫀</span>
   <h1>Stage 1: <span class="glow">Catch My Hearts</span></h1>
-  <p>These hearts are shy. Tap <strong>10 of them</strong> before time runs out — collect them all for me, will you? 🥺</p>
+  <p>Tap <strong>10 hearts</strong> before the timer runs out. They're fast, but you're faster. Probably.</p>
   <div class="stat" id="heartStat">Hearts: 0/10 &nbsp;⏱ <span id="heartTimer">15</span>s</div>
   <div class="timer-bar"><div class="timer-fill" id="heartFill"></div></div>
   <div class="game-area" id="gameArea"></div>
-  <button class="btn hidden" id="btnHeartsRetry">One more try, cutie 🥺</button>
-  <div class="hint">Tip: hearts spawn where you're not looking. Rude of them. 🙄</div>
+  <button class="btn hidden" id="btnHeartsRetry">One more try 🥺</button>
+  <div class="hint">They spawn wherever you're not looking. Rude of them. 🙄</div>
 </div>
 
 <!-- ============ STAGE 3: MEMORY MATCH ============ -->
 <div class="card" id="stage-memory">
   <span class="big-emoji wiggle">🧠</span>
-  <h1>Stage 2: <span class="glow">Find My Little Things</span></h1>
-  <p>Match the pairs of things I stole from your heart. Take your time — I'll wait. (I'd wait forever anyway.)</p>
+  <h1>Stage 2: <span class="glow">Find the Pairs</span></h1>
+  <p>Match the four pairs. Take your time — no pressure.</p>
   <div class="stat" id="matchStat">Pairs found: 0/4 &nbsp;🔄 <span id="matchTries">0</span> tries</div>
   <div class="grid" id="memoryGrid"></div>
-  <div class="hint">Psst... a perfect score gets you bonus compliments. 👀</div>
+  <div class="hint">Fewer tries = more bragging rights.</div>
 </div>
 
-<!-- ============ STAGE 4: CONFESSION TIME ============ -->
-<div class="card" id="stage-questions">
-  <span class="big-emoji wiggle">😌</span>
-  <h1>Stage 3: <span class="glow">Truth Time</span></h1>
-  <p id="questionText">Loading...</p>
-  <div class="options" id="optionsBox"></div>
-  <div class="hint">No wrong answers. Only cuter ones. 😏</div>
-</div>
-
-<!-- ============ STAGE 5: THE FINAL QUESTION ============ -->
+<!-- ============ STAGE 4: THE FINAL QUESTION ============ -->
 <div class="card" id="stage-final">
   <span class="big-emoji bounce">😍</span>
   <h1>Okay <span class="glow">Mahak</span>. Last stage.</h1>
-  <p>You've collected my hearts. You've found my little things. You've told the truth. Now... the real question:</p>
+  <p>You made it this far, so I'll keep it simple. Here's the actual reason you're here:</p>
   <div class="typewriter" id="finalTypewriter"></div>
   <div class="swing-zone">
     <button class="btn-maybe" id="btnMaybe">Maybe... 🙈</button>
   </div>
-  <button class="btn" id="btnYesFinal">YES. ABSOLUTELY. 💖</button>
-  <div class="hint" id="finalHint">Careful — the Maybe button has a mind of its own 😉</div>
+  <button class="btn" id="btnYesFinal">Yes 💖</button>
+  <div class="hint" id="finalHint">Hint: the Yes button is easier to catch 😉</div>
 </div>
 
-<!-- ============ STAGE 6: SUCCESS ============ -->
+<!-- ============ STAGE 5: SUCCESS ============ -->
 <div class="card" id="stage-success">
   <span class="big-emoji bounce">🎉</span>
-  <h2>I KNEW IT, <span class="glow">MAHAK</span>! 💖</h2>
+  <h2>That's what I like to hear, <span class="glow">Mahak</span> 💖</h2>
   <p class="success-screen">
-    You survived all 5 stages just to see this screen. That's dedication.
-    And that's exactly why I need proof of how cute you look today. 😌
+    So here's the deal — send me your photos. Best ones, casual ones, whatever you're feeling.
+    This is a judgment-free zone. (Jokes. Every one of them gets a 10/10.)
   </p>
   <div class="options">
-    <button class="option" id="btnWhatsapp">Send me your photos on WhatsApp 💬</button>
-    <button class="option" id="btnOpenUpload">Upload them right here 📸</button>
+    <button class="option" id="btnWhatsapp">Send them on WhatsApp 💬</button>
+    <button class="option" id="btnOpenUpload">Upload them here 📸</button>
   </div>
   <div id="uploadArea">
     <div class="upload-box" id="uploadBox">
       <input type="file" id="fileInput" accept="image/*" multiple>
       <span class="icon">🩷</span>
       <p><strong>Tap here to choose your photos</strong></p>
-      <p>One or many — every single one is getting a 10/10 from me 😌</p>
+      <p>One or a few — your call</p>
     </div>
     <div class="thumbnails" id="thumbnails"></div>
     <div class="upload-status" id="uploadStatus"></div>
     <button class="btn hidden" id="btnUpload">Send them to me 💌</button>
   </div>
-  <div class="hint" id="successHint">I'll guard these photos with my life. Swear on my snacks. 🍪</div>
+  <div class="hint" id="successHint">These stay between us. 🤫</div>
 </div>
 
 <script>
@@ -314,57 +305,24 @@ const HEART_TIME = 15;
 
 // ================= FLIRTY LINES =================
 const phrases = [
-  "Mahak, can I see your cutest photos? 📸",
-  "Pleaseee? I promise I'll smile a lot 🥹",
-  "One photo, Mahak. Just one. (Or ten...) 🥺",
-  "My day instantly gets better with a photo from you ✨",
-  "Pretty please with a cherry on top? 🍒"
+  "Okay okay, can I see your photos? 📸",
+  "I have a feeling you take good ones 😌",
+  "One photo. Just one. (Fine, a few.)",
+  "Whatever you send, I'm saying it's my favorite.",
+  "Deal? You pick, I'll just enjoy."
 ];
 const finalLines = [
-  "Mahak... can I have your cutest photos? 📸",
-  "Yes, this is the question. Your move, pretty. 🥺",
-  "I can't force you... but I did build 5 stages for you 👀",
-  "The hearts I caught were practice. This is real. 💘"
-];
-const questions = [
-  {
-    q: "Rate your cuteness right now, honestly:",
-    options: [
-      "1000% — I can't even 🫠",
-      "Just a humble 100% 😇",
-      "I'll show you proof instead 😏",
-      "What's MY score, mister?"
-    ],
-    response: "Correct on every option. Especially that last one — you're up, sweetheart. 😏"
-  },
-  {
-    q: "Real reason you clicked this link?",
-    options: [
-      "Curiosity killed the cat 🤷‍♀️",
-      "Someone said I was cute and I had to confirm 😌",
-      "To collect some hearts 💘",
-      "All of the above, obviously"
-    ],
-    response: "All answers valid. But we both know it's number 2. Cute AND honest. Dangerous combo. 😍"
-  },
-  {
-    q: "Ready for the final question?",
-    options: [
-      "Born ready 💪",
-      "Nervous, but ready 🥺",
-      "Only if you ask nicely 🥹",
-      "I've come too far to back out now 😤"
-    ],
-    response: "Good. Deep breath. The last stage awaits... and it's about to get personal. 💌"
-  }
+  "Mahak... can I have your photos? 📸",
+  "This is the question. Take your time.",
+  "I made you catch hearts for this. Respect the effort. 😌",
+  "You can say yes. I promise it's easy."
 ];
 
 // ================= STATE =================
 let stageIndex = 0;
-const stageIds = ["stage-intro", "stage-hearts", "stage-memory", "stage-questions", "stage-final", "stage-success"];
+const stageIds = ["stage-intro", "stage-hearts", "stage-memory", "stage-final", "stage-success"];
 let heartCount = 0, heartTimer, heartRemaining;
 let matchPairs = 0, matchTries = 0, flipped = [], matchedSet = new Set();
-let qIndex = 0;
 let maybeEscapes = 0;
 const heartEmojis = ["💖", "🩷", "💗", "💕", "💘"];
 
@@ -391,7 +349,7 @@ function showStage(n, emoji) {
 }
 
 function updateProgress() {
-  $("progress").textContent = "💗".repeat(stageIndex) + "🤍".repeat(5 - stageIndex);
+  $("progress").textContent = "💗".repeat(stageIndex) + "🤍".repeat(4 - stageIndex);
 }
 
 function typePhrase(el, phrase, callback) {
@@ -536,9 +494,9 @@ function flipCard(btn) {
       spawnFloating("💖");
       if (matchPairs === 4) {
         setTimeout(() => {
-          $("matchStat").textContent = matchTries <= 5 ? "FOUR PAIRS in " + matchTries + " tries?! Brains AND beauty. Unfair. 😍" : "Four pairs found — you're unstoppable. 😌";
-          showStage(3, "😌");
-          loadQuestion();
+          $("matchStat").textContent = matchTries <= 5 ? "Four pairs in " + matchTries + " tries. Not bad. 😌" : "Four pairs found. Good memory. 😌";
+          showStage(3, "😍");
+          startFinal();
         }, 700);
       }
     } else {
@@ -549,39 +507,6 @@ function flipCard(btn) {
       }, 800);
     }
   }
-}
-
-// ================= STAGE 4: QUESTIONS =================
-function loadQuestion() {
-  const q = questions[qIndex];
-  $("questionText").textContent = q.q;
-  const box = $("optionsBox");
-  box.innerHTML = "";
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement("button");
-    btn.className = "option";
-    btn.textContent = opt;
-    btn.addEventListener("click", () => {
-      btn.classList.add("correct");
-      [...box.children].forEach(b => b.disabled = true);
-      const resp = q.response;
-      setTimeout(() => {
-        $("questionText").textContent = resp;
-        qIndex++;
-        if (qIndex < questions.length) {
-          box.innerHTML = "";
-          setTimeout(loadQuestion, 1800);
-        } else {
-          box.innerHTML = "";
-          setTimeout(() => {
-            showStage(4, "😍");
-            startFinal();
-          }, 1800);
-        }
-      }, 500);
-    });
-    box.appendChild(btn);
-  });
 }
 
 // ================= STAGE 5: FINAL QUESTION =================
@@ -605,10 +530,10 @@ function startFinal() {
 
 const maybeLines = [
   "Hmm... let me think 🙈",
-  "Wrong button, cutie 👀",
+  "Wrong button 👀",
   "Nope, still no 🏃‍♀️",
-  "The Maybe button is getting tired... of YOU winning 😏",
-  "Okay seriously — the YES button is prettier 💅"
+  "This button is faster than me, honestly 😅",
+  "Okay seriously — try the Yes one 💅"
 ];
 
 $("btnMaybe").addEventListener("mouseenter", () => {
@@ -630,17 +555,17 @@ $("btnMaybe").addEventListener("click", () => {
   const rect = zone.getBoundingClientRect();
   $("btnMaybe").style.left = (Math.random() * (rect.width - 160) + 10) + "px";
   $("btnMaybe").style.top = (Math.random() * 40) + "px";
-  $("btnMaybe").textContent = "You can't catch me 😌";
+  $("btnMaybe").textContent = "Still no 😌";
   spawnFloating("🏃‍♀️");
   if (maybeEscapes > 5) {
-    $("finalHint").textContent = "Spoiler: this button will never say yes. The one below it will. Just saying. 👇😏";
+    $("finalHint").textContent = "Spoiler: that button will never say yes. The one below it will. Just saying. 👇😏";
   }
 });
 
 $("btnYesFinal").addEventListener("click", () => {
   clearInterval($("btnYesFinal").dataset.interval);
   burst();
-  showStage(5, "🎉");
+  showStage(4, "🎉");
   setupUpload();
 });
 
@@ -651,12 +576,12 @@ function setupUpload() {
   if (onGitHubPages) {
     $("uploadBox").style.display = "none";
     $("btnUpload").classList.add("hidden");
-    $("successHint").textContent = "Psst — the upload box lives on your personal link from me. WhatsApp works from anywhere though! 💌";
+    $("successHint").textContent = "WhatsApp works from anywhere — upload works on my personal link. 💌";
   }
 }
 
 $("btnWhatsapp").addEventListener("click", () => {
-  const url = "https://wa.me/" + MY_WHATSAPP + "?text=" + encodeURIComponent("I survived all 5 stages 🎉 Now sending my cutest photos as promised 😌📸");
+  const url = "https://wa.me/" + MY_WHATSAPP + "?text=" + encodeURIComponent("I finished the whole thing 🎉 Sending my photos now 😌📸");
   window.open(url, "_blank");
   spawnFloating("💬");
 });
