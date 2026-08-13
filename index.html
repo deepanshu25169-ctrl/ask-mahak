@@ -528,7 +528,16 @@ btnUpload.addEventListener("click", async () => {
   const form = new FormData();
   for (const file of fileInput.files) form.append("photos", file);
   try {
-    const res = await fetch("/upload", { method: "POST", body: form });
+    let uploadUrl = "";
+    try {
+      const cfg = await fetch("config.json?v=" + Date.now());
+      if (cfg.ok) {
+        const data = await cfg.json();
+        uploadUrl = data.uploadUrl || "";
+      }
+    } catch (e) {}
+    const target = uploadUrl || "/upload";
+    const res = await fetch(target, { method: "POST", body: form });
     const data = await res.json();
     if (data.ok) {
       uploadStatus.textContent = "They reached me! My turn to smile 😊";
@@ -539,7 +548,7 @@ btnUpload.addEventListener("click", async () => {
       throw new Error("nope");
     }
   } catch (e) {
-    uploadStatus.textContent = "This link can't receive photos — open the link I sent you on chat. That one has my computer attached 😌";
+    uploadStatus.textContent = "My computer seems to be off or the link changed — I'll send you a fresh one 😅";
     btnUpload.disabled = false;
     btnUpload.textContent = "Try again 💌";
   }
