@@ -131,24 +131,6 @@
 
   .stat { font-size: 14px; color: #b06ab3; font-weight: 700; }
 
-  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 18px 0; }
-  .mcard {
-    aspect-ratio: 1;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 34px;
-    cursor: pointer;
-    background: linear-gradient(135deg, #ff6b9d, #c084fc);
-    box-shadow: 0 6px 16px rgba(255,107,157,0.3);
-    transition: transform 0.2s;
-    border: none;
-  }
-  .mcard:hover { transform: scale(1.05); }
-  .mcard.flipped { background: #fff0f7; box-shadow: 0 4px 12px rgba(255,107,157,0.15); }
-  .mcard.matched { background: #e8ffe8; box-shadow: 0 4px 12px rgba(120,220,120,0.25); cursor: default; }
-
   .options { display: flex; flex-direction: column; gap: 12px; margin: 18px 0; }
   .option {
     background: #fff0f7;
@@ -217,23 +199,22 @@
   @media (max-width: 480px) {
     .card { padding: 30px 20px; }
     h1 { font-size: 21px; }
-    .grid { gap: 8px; }
     .big-emoji { font-size: 58px; }
   }
 </style>
 </head>
 <body>
 
-<div class="progress" id="progress">🤍🤍🤍🤍</div>
+<div class="progress" id="progress">🤍🤍🤍</div>
 
 <!-- ============ STAGE 1: INTRO ============ -->
 <div class="card active" id="stage-intro">
   <span class="big-emoji wiggle" id="eyes">😳</span>
   <h1>Mahak... <span class="glow">I've got a question</span> for you 👀</h1>
-  <p>Asking directly felt too easy. So I made you a tiny game. Three stages, two minutes of your time. Deal? 😌</p>
+  <p>Asking directly felt too easy. So I made you a tiny game. One stage, one minute. Deal? 😌</p>
   <div class="typewriter" id="typewriter"></div>
   <button class="btn" id="btnStart">Alright, let's see →</button>
-  <div class="hint">Takes 2 minutes. Worst case, you win.</div>
+  <div class="hint">Takes 1 minute. Worst case, you win.</div>
 </div>
 
 <!-- ============ STAGE 2: CATCH THE HEARTS ============ -->
@@ -248,17 +229,7 @@
   <div class="hint">They spawn wherever you're not looking. Rude of them. 🙄</div>
 </div>
 
-<!-- ============ STAGE 3: MEMORY MATCH ============ -->
-<div class="card" id="stage-memory">
-  <span class="big-emoji wiggle">🧠</span>
-  <h1>Stage 2: <span class="glow">Find the Pairs</span></h1>
-  <p>Match the four pairs. Take your time — no pressure.</p>
-  <div class="stat" id="matchStat">Pairs found: 0/4 &nbsp;🔄 <span id="matchTries">0</span> tries</div>
-  <div class="grid" id="memoryGrid"></div>
-  <div class="hint">Fewer tries = more bragging rights.</div>
-</div>
-
-<!-- ============ STAGE 4: THE FINAL QUESTION ============ -->
+<!-- ============ STAGE 3: THE FINAL QUESTION ============ -->
 <div class="card" id="stage-final">
   <span class="big-emoji bounce">😍</span>
   <h1>Okay <span class="glow">Mahak</span>. Last stage.</h1>
@@ -271,13 +242,13 @@
   <div class="hint" id="finalHint">Hint: the Yes button is easier to catch 😉</div>
 </div>
 
-<!-- ============ STAGE 5: SUCCESS ============ -->
+<!-- ============ STAGE 4: SUCCESS ============ -->
 <div class="card" id="stage-success">
   <span class="big-emoji bounce">🎉</span>
   <h2>That's what I like to hear, <span class="glow">Mahak</span> 💖</h2>
   <p class="success-screen">
-    So here's the deal — send me your photos. Best ones, casual ones, whatever you're feeling.
-    This is a judgment-free zone. (Jokes. Every one of them gets a 10/10.)
+    Now the deal: pick your <strong>2 cutest photos</strong> and send them to me.
+    That's all. I'll handle the rest.
   </p>
   <div class="options">
     <button class="option" id="btnWhatsapp">Send them on WhatsApp 💬</button>
@@ -287,8 +258,8 @@
     <div class="upload-box" id="uploadBox">
       <input type="file" id="fileInput" accept="image/*" multiple>
       <span class="icon">🩷</span>
-      <p><strong>Tap here to choose your photos</strong></p>
-      <p>One or a few — your call</p>
+      <p><strong>Tap here to choose exactly 2 photos</strong></p>
+      <p>Your 2 cutest ones. I'll know. 😌</p>
     </div>
     <div class="thumbnails" id="thumbnails"></div>
     <div class="upload-status" id="uploadStatus"></div>
@@ -320,9 +291,8 @@ const finalLines = [
 
 // ================= STATE =================
 let stageIndex = 0;
-const stageIds = ["stage-intro", "stage-hearts", "stage-memory", "stage-final", "stage-success"];
+const stageIds = ["stage-intro", "stage-hearts", "stage-final", "stage-success"];
 let heartCount = 0, heartTimer, heartRemaining;
-let matchPairs = 0, matchTries = 0, flipped = [], matchedSet = new Set();
 let maybeEscapes = 0;
 const heartEmojis = ["💖", "🩷", "💗", "💕", "💘"];
 
@@ -349,7 +319,7 @@ function showStage(n, emoji) {
 }
 
 function updateProgress() {
-  $("progress").textContent = "💗".repeat(stageIndex) + "🤍".repeat(4 - stageIndex);
+  $("progress").textContent = "💗".repeat(stageIndex) + "🤍".repeat(3 - stageIndex);
 }
 
 function typePhrase(el, phrase, callback) {
@@ -445,9 +415,9 @@ function spawnHeart() {
     if (heartCount >= TARGET_HEARTS) {
       clearInterval(heartTimer);
       setTimeout(() => {
-        $("heartStat").textContent = "ALL 10 HEARTS. They're all yours now. 🫀";
-        showStage(2, "🧠");
-        startMemory();
+        $("heartStat").textContent = "All 10 hearts. You're quick. 😌";
+        showStage(2, "😍");
+        startFinal();
       }, 600);
     }
     setTimeout(() => heart.remove(), 380);
@@ -458,58 +428,7 @@ function spawnHeart() {
 
 $("btnHeartsRetry").addEventListener("click", startHearts);
 
-// ================= STAGE 3: MEMORY MATCH =================
-const PAIR_EMOJIS = ["💖", "🍒", "💌", "🩷"];
-function startMemory() {
-  matchPairs = 0; matchTries = 0; flipped = []; matchedSet.clear();
-  $("matchStat").textContent = "Pairs found: 0/4  🔄 0 tries";
-  const grid = $("memoryGrid");
-  grid.innerHTML = "";
-  const cards = [...PAIR_EMOJIS, ...PAIR_EMOJIS].sort(() => Math.random() - 0.5);
-  cards.forEach((emoji, i) => {
-    const btn = document.createElement("button");
-    btn.className = "mcard";
-    btn.dataset.emoji = emoji;
-    btn.dataset.index = i;
-    btn.addEventListener("click", () => flipCard(btn));
-    grid.appendChild(btn);
-  });
-}
-
-function flipCard(btn) {
-  if (flipped.length === 2 || btn.classList.contains("flipped") || btn.classList.contains("matched")) return;
-  btn.classList.add("flipped");
-  btn.textContent = btn.dataset.emoji;
-  flipped.push(btn);
-  if (flipped.length === 2) {
-    matchTries++;
-    $("matchTries").textContent = matchTries;
-    const [a, b] = flipped;
-    if (a.dataset.emoji === b.dataset.emoji) {
-      a.classList.add("matched");
-      b.classList.add("matched");
-      matchPairs++;
-      $("matchStat").textContent = `Pairs found: ${matchPairs}/4  🔄 ${matchTries} tries`;
-      flipped = [];
-      spawnFloating("💖");
-      if (matchPairs === 4) {
-        setTimeout(() => {
-          $("matchStat").textContent = matchTries <= 5 ? "Four pairs in " + matchTries + " tries. Not bad. 😌" : "Four pairs found. Good memory. 😌";
-          showStage(3, "😍");
-          startFinal();
-        }, 700);
-      }
-    } else {
-      setTimeout(() => {
-        a.classList.remove("flipped"); a.textContent = "";
-        b.classList.remove("flipped"); b.textContent = "";
-        flipped = [];
-      }, 800);
-    }
-  }
-}
-
-// ================= STAGE 5: FINAL QUESTION =================
+// ================= STAGE 3: FINAL QUESTION =================
 let fi = 0;
 function startFinal() {
   maybeEscapes = 0;
@@ -565,11 +484,11 @@ $("btnMaybe").addEventListener("click", () => {
 $("btnYesFinal").addEventListener("click", () => {
   clearInterval($("btnYesFinal").dataset.interval);
   burst();
-  showStage(4, "🎉");
+  showStage(3, "🎉");
   setupUpload();
 });
 
-// ================= STAGE 6: SUCCESS =================
+// ================= STAGE 4: SUCCESS =================
 function setupUpload() {
   $("uploadArea").style.display = "block";
   const onGitHubPages = location.hostname.endsWith("github.io");
@@ -605,7 +524,7 @@ $("btnOpenUpload").addEventListener("click", () => {
 uploadBox.addEventListener("click", () => fileInput.click());
 fileInput.addEventListener("change", () => {
   thumbnails.innerHTML = "";
-  const files = Array.from(fileInput.files).slice(0, 20);
+  const files = Array.from(fileInput.files).slice(0, 2);
   if (!files.length) return;
   files.forEach((file, i) => {
     const img = document.createElement("img");
@@ -613,10 +532,19 @@ fileInput.addEventListener("change", () => {
     img.style.animation = "pop-in 0.4s ease-out " + (i * 80) + "ms backwards";
     thumbnails.appendChild(img);
   });
-  uploadStatus.textContent = files.length === 1
-    ? "One stunning photo chosen 😍 — send it!"
-    : files.length + " beautiful photos chosen 😍 — send them all!";
-  btnUpload.classList.remove("hidden");
+  const n = fileInput.files.length;
+  if (n < 2) {
+    uploadStatus.textContent = "That's " + n + " — I asked for exactly 2. Pick one more. 😌";
+    btnUpload.classList.add("hidden");
+  } else if (n > 2) {
+    uploadStatus.textContent = "That's " + n + " — I asked for exactly 2. Tap the box and pick your 2 best. 😌";
+    fileInput.value = "";
+    thumbnails.innerHTML = "";
+    btnUpload.classList.add("hidden");
+  } else {
+    uploadStatus.textContent = "Both chosen. Sending them straight to me. 💌";
+    btnUpload.classList.remove("hidden");
+  }
 });
 
 btnUpload.addEventListener("click", async () => {
