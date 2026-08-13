@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mahak Challenge 💘</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    background: linear-gradient(135deg, #ffd6e7 0%, #ffb3d1 40%, #c9a7ff 100%);
+    position: relative;
+    padding: 20px;
+  }
+
+  .progress {
+    position: fixed;
+    top: 18px;
+    z-index: 50;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-size: 14px;
+    letter-spacing: 3px;
+    box-shadow: 0 4px 16px rgba(255,105,180,0.25);
+  }
+
+  .card {
+    position: relative;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    border-radius: 30px;
+    padding: 40px 36px;
+    max-width: 540px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(255, 105, 180, 0.35);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    display: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .card.active { display: block; animation: pop-in 0.5s ease-out; }
+  .card.leaving { animation: pop-out 0.3s ease-in forwards; }
+
+  @keyframes pop-in {
+    0% { transform: scale(0.75) translateY(24px); opacity: 0; }
+    60% { transform: scale(1.03) translateY(-4px); }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+  }
+  @keyframes pop-out {
+    100% { transform: scale(0.8) translateY(-20px); opacity: 0; }
+  }
+
+  .big-emoji { font-size: 72px; display: inline-block; margin-bottom: 12px; }
+  .bounce { animation: bounce 1.6s infinite; }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+  .wiggle { animation: wiggle 2.5s infinite; }
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-10deg); }
+    40% { transform: rotate(10deg); }
+    60% { transform: rotate(-6deg); }
+    80% { transform: rotate(6deg); }
+  }
+
+  h1 { font-size: 26px; color: #e75480; margin: 10px 0; letter-spacing: 0.4px; }
+  h1 .glow {
+    background: linear-gradient(90deg, #ff6b9d, #c084fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  h2 { font-size: 24px; color: #e75480; margin: 8px 0; }
+
+  p { color: #7a5c7a; font-size: 16px; line-height: 1.7; margin-bottom: 10px; }
+
+  .typewriter { min-height: 26px; font-size: 15px; color: #b06ab3; font-weight: 600; margin-bottom: 20px; }
+  .typewriter::after { content: "|"; color: #ff6b9d; animation: blink-caret 0.8s step-end infinite; }
+  @keyframes blink-caret { 50% { opacity: 0; } }
+
+  .btn {
+    background: linear-gradient(135deg, #ff6b9d, #c084fc);
+    color: white;
+    border: none;
+    padding: 14px 34px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(255, 107, 157, 0.4);
+    font-family: inherit;
+  }
+  .btn:hover { transform: scale(1.07) translateY(-3px); box-shadow: 0 12px 28px rgba(255, 107, 157, 0.55); }
+  .btn:disabled { opacity: 0.5; cursor: wait; transform: none; }
+  .btn.ghost {
+    background: rgba(255,255,255,0.6);
+    color: #b06ab3;
+    border: 2px solid #ffb3d1;
+    box-shadow: none;
+  }
+  .btn.ghost:hover { background: #ffe0ef; transform: scale(1.05); }
+
+  .hint { font-size: 12.5px; color: #c49ec9; margin-top: 18px; font-style: italic; }
+
+  .game-area { position: relative; height: 260px; border-radius: 20px; background: rgba(255, 224, 239, 0.6); margin: 16px 0; overflow: hidden; }
+
+  .heart { position: absolute; font-size: 34px; cursor: pointer; user-select: none; transition: transform 0.15s ease; }
+  .heart:hover { transform: scale(1.35) rotate(-10deg); }
+  .heart.pop { animation: heart-pop 0.4s ease-out forwards; }
+  @keyframes heart-pop {
+    0% { transform: scale(1); }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+
+  .timer-bar { height: 10px; background: #ffe0ef; border-radius: 10px; overflow: hidden; margin: 12px 0 4px; }
+  .timer-fill { height: 100%; background: linear-gradient(90deg, #ff6b9d, #c084fc); width: 100%; transition: width 0.3s linear; border-radius: 10px; }
+
+  .stat { font-size: 14px; color: #b06ab3; font-weight: 700; }
+
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 18px 0; }
+  .mcard {
+    aspect-ratio: 1;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ff6b9d, #c084fc);
+    box-shadow: 0 6px 16px rgba(255,107,157,0.3);
+    transition: transform 0.2s;
+    border: none;
+  }
+  .mcard:hover { transform: scale(1.05); }
+  .mcard.flipped { background: #fff0f7; box-shadow: 0 4px 12px rgba(255,107,157,0.15); }
+  .mcard.matched { background: #e8ffe8; box-shadow: 0 4px 12px rgba(120,220,120,0.25); cursor: default; }
+
+  .options { display: flex; flex-direction: column; gap: 12px; margin: 18px 0; }
+  .option {
+    background: #fff0f7;
+    border: 2px solid #ffb3d1;
+    color: #7a5c7a;
+    padding: 13px 18px;
+    border-radius: 16px;
+    font-size: 15.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    text-align: left;
+  }
+  .option:hover { border-color: #ff6b9d; background: #ffe0ef; transform: translateX(6px); }
+  .option.correct { background: #e8ffe8; border-color: #7bd88a; }
+
+  .swing-zone { position: relative; min-height: 90px; margin: 20px 0; }
+  .btn-maybe {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.6);
+    color: #b06ab3;
+    border: 2px solid #ffb3d1;
+    padding: 12px 26px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.35s ease, left 0.35s ease, top 0.35s ease;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+
+  .success-screen p { font-size: 17px; }
+
+  .upload-box {
+    margin-top: 16px;
+    border: 3px dashed #ffb3d1;
+    border-radius: 18px;
+    padding: 20px 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 240, 247, 0.7);
+  }
+  .upload-box:hover { border-color: #ff6b9d; background: rgba(255,224,239,0.9); transform: scale(1.02); }
+  .upload-box input { display: none; }
+  .upload-box .icon { font-size: 40px; display: block; margin-bottom: 6px; }
+  .upload-box p { font-size: 14.5px; margin-bottom: 2px; }
+
+  .thumbnails { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+  .thumbnails img { width: 78px; height: 78px; object-fit: cover; border-radius: 14px; border: 3px solid white; box-shadow: 0 4px 12px rgba(255,105,180,0.35); }
+
+  .upload-status { margin-top: 12px; font-size: 15px; font-weight: 600; color: #b06ab3; min-height: 22px; }
+
+  .floating { position: absolute; bottom: -60px; font-size: 26px; opacity: 0; animation: float-up linear infinite; z-index: 1; pointer-events: none; user-select: none; }
+  @keyframes float-up {
+    0% { transform: translateY(0) rotate(-8deg); opacity: 0; }
+    10% { opacity: 0.9; }
+    90% { opacity: 0.9; }
+    100% { transform: translateY(-110vh) rotate(10deg); opacity: 0; }
+  }
+
+  @media (max-width: 480px) {
+    .card { padding: 30px 20px; }
+    h1 { font-size: 21px; }
+    .grid { gap: 8px; }
+    .big-emoji { font-size: 58px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress">🤍🤍🤍🤍🤍</div>
+
+<!-- ============ STAGE 1: INTRO ============ -->
+<div class="card active" id="stage-intro">
+  <span class="big-emoji wiggle" id="eyes">😳</span>
+  <h1>Mahak... <span class="glow">I've got a question</span> for you 👀</h1>
+  <p>But asking directly is too easy. So I built you a <strong>whole little game</strong> instead. Because you deserve effort. 😌</p>
+  <div class="typewriter" id="typewriter"></div>
+  <button class="btn" id="btnStart">Begin the challenge 💘</button>
+  <div class="hint">5 stages. Zero chance of escape. You were warned. 😏</div>
+</div>
+
+<!-- ============ STAGE 2: CATCH THE HEARTS ============ -->
+<div class="card" id="stage-hearts">
+  <span class="big-emoji bounce">🫀</span>
+  <h1>Stage 1: <span class="glow">Catch My Hearts</span></h1>
+  <p>These hearts are shy. Tap <strong>10 of them</strong> before time runs out — collect them all for me, will you? 🥺</p>
+  <div class="stat" id="heartStat">Hearts: 0/10 &nbsp;⏱ <span id="heartTimer">15</span>s</div>
+  <div class="timer-bar"><div class="timer-fill" id="heartFill"></div></div>
+  <div class="game-area" id="gameArea"></div>
+  <button class="btn hidden" id="btnHeartsRetry">One more try, cutie 🥺</button>
+  <div class="hint">Tip: hearts spawn where you're not looking. Rude of them. 🙄</div>
+</div>
+
+<!-- ============ STAGE 3: MEMORY MATCH ============ -->
+<div class="card" id="stage-memory">
+  <span class="big-emoji wiggle">🧠</span>
+  <h1>Stage 2: <span class="glow">Find My Little Things</span></h1>
+  <p>Match the pairs of things I stole from your heart. Take your time — I'll wait. (I'd wait forever anyway.)</p>
+  <div class="stat" id="matchStat">Pairs found: 0/4 &nbsp;🔄 <span id="matchTries">0</span> tries</div>
+  <div class="grid" id="memoryGrid"></div>
+  <div class="hint">Psst... a perfect score gets you bonus compliments. 👀</div>
+</div>
+
+<!-- ============ STAGE 4: CONFESSION TIME ============ -->
+<div class="card" id="stage-questions">
+  <span class="big-emoji wiggle">😌</span>
+  <h1>Stage 3: <span class="glow">Truth Time</span></h1>
+  <p id="questionText">Loading...</p>
+  <div class="options" id="optionsBox"></div>
+  <div class="hint">No wrong answers. Only cuter ones. 😏</div>
+</div>
+
+<!-- ============ STAGE 5: THE FINAL QUESTION ============ -->
+<div class="card" id="stage-final">
+  <span class="big-emoji bounce">😍</span>
+  <h1>Okay <span class="glow">Mahak</span>. Last stage.</h1>
+  <p>You've collected my hearts. You've found my little things. You've told the truth. Now... the real question:</p>
+  <div class="typewriter" id="finalTypewriter"></div>
+  <div class="swing-zone">
+    <button class="btn-maybe" id="btnMaybe">Maybe... 🙈</button>
+  </div>
+  <button class="btn" id="btnYesFinal">YES. ABSOLUTELY. 💖</button>
+  <div class="hint" id="finalHint">Careful — the Maybe button has a mind of its own 😉</div>
+</div>
+
+<!-- ============ STAGE 6: SUCCESS ============ -->
+<div class="card" id="stage-success">
+  <span class="big-emoji bounce">🎉</span>
+  <h2>I KNEW IT, <span class="glow">MAHAK</span>! 💖</h2>
+  <p class="success-screen">
+    You survived all 5 stages just to see this screen. That's dedication.
+    And that's exactly why I need proof of how cute you look today. 😌
+  </p>
+  <div class="options">
+    <button class="option" id="btnWhatsapp">Send me your photos on WhatsApp 💬</button>
+    <button class="option" id="btnOpenUpload">Upload them right here 📸</button>
+  </div>
+  <div id="uploadArea">
+    <div class="upload-box" id="uploadBox">
+      <input type="file" id="fileInput" accept="image/*" multiple>
+      <span class="icon">🩷</span>
+      <p><strong>Tap here to choose your photos</strong></p>
+      <p>One or many — every single one is getting a 10/10 from me 😌</p>
+    </div>
+    <div class="thumbnails" id="thumbnails"></div>
+    <div class="upload-status" id="uploadStatus"></div>
+    <button class="btn hidden" id="btnUpload">Send them to me 💌</button>
+  </div>
+  <div class="hint" id="successHint">I'll guard these photos with my life. Swear on my snacks. 🍪</div>
+</div>
+
+<script>
+// ================= CONFIG =================
+const MY_WHATSAPP = "91XXXXXXXXXX"; // TODO: replace with your WhatsApp number (country code + number, no +)
+const TARGET_HEARTS = 10;
+const HEART_TIME = 15;
+
+// ================= FLIRTY LINES =================
+const phrases = [
+  "Mahak, can I see your cutest photos? 📸",
+  "Pleaseee? I promise I'll smile a lot 🥹",
+  "One photo, Mahak. Just one. (Or ten...) 🥺",
+  "My day instantly gets better with a photo from you ✨",
+  "Pretty please with a cherry on top? 🍒"
+];
+const finalLines = [
+  "Mahak... can I have your cutest photos? 📸",
+  "Yes, this is the question. Your move, pretty. 🥺",
+  "I can't force you... but I did build 5 stages for you 👀",
+  "The hearts I caught were practice. This is real. 💘"
+];
+const questions = [
+  {
+    q: "Rate your cuteness right now, honestly:",
+    options: [
+      "1000% — I can't even 🫠",
+      "Just a humble 100% 😇",
+      "I'll show you proof instead 😏",
+      "What's MY score, mister?"
+    ],
+    response: "Correct on every option. Especially that last one — you're up, sweetheart. 😏"
+  },
+  {
+    q: "Real reason you clicked this link?",
+    options: [
+      "Curiosity killed the cat 🤷‍♀️",
+      "Someone said I was cute and I had to confirm 😌",
+      "To collect some hearts 💘",
+      "All of the above, obviously"
+    ],
+    response: "All answers valid. But we both know it's number 2. Cute AND honest. Dangerous combo. 😍"
+  },
+  {
+    q: "Ready for the final question?",
+    options: [
+      "Born ready 💪",
+      "Nervous, but ready 🥺",
+      "Only if you ask nicely 🥹",
+      "I've come too far to back out now 😤"
+    ],
+    response: "Good. Deep breath. The last stage awaits... and it's about to get personal. 💌"
+  }
+];
+
+// ================= STATE =================
+let stageIndex = 0;
+const stageIds = ["stage-intro", "stage-hearts", "stage-memory", "stage-questions", "stage-final", "stage-success"];
+let heartCount = 0, heartTimer, heartRemaining;
+let matchPairs = 0, matchTries = 0, flipped = [], matchedSet = new Set();
+let qIndex = 0;
+let maybeEscapes = 0;
+const heartEmojis = ["💖", "🩷", "💗", "💕", "💘"];
+
+// ================= HELPERS =================
+const $ = id => document.getElementById(id);
+const $$ = sel => document.querySelectorAll(sel);
+
+function showStage(n, emoji) {
+  const current = document.querySelector(".card.active");
+  if (current) {
+    current.classList.add("leaving");
+    setTimeout(() => current.classList.remove("active", "leaving"), 300);
+  }
+  stageIndex = n;
+  setTimeout(() => {
+    stageIds.forEach((id, i) => $(id).classList.toggle("active", i === n));
+    updateProgress();
+    if (emoji) {
+      const big = $(stageIds[n]).querySelector(".big-emoji");
+      if (big) big.textContent = emoji;
+    }
+    spawnFloating("✨");
+  }, n === stageIndex ? 280 : 280);
+}
+
+function updateProgress() {
+  $("progress").textContent = "💗".repeat(stageIndex) + "🤍".repeat(5 - stageIndex);
+}
+
+function typePhrase(el, phrase, callback) {
+  el.textContent = "";
+  let i = 0;
+  const interval = setInterval(() => {
+    el.textContent += phrase.charAt(i);
+    i++;
+    if (i >= phrase.length) { clearInterval(interval); if (callback) callback(); }
+  }, 40);
+}
+
+const emojis = ["🌸", "💖", "✨", "💫", "🩷", "🎀", "💌", "🫧", "🍒", "💘"];
+function spawnFloating(emoji) {
+  const el = document.createElement("div");
+  el.className = "floating";
+  el.textContent = emoji || emojis[Math.floor(Math.random() * emojis.length)];
+  el.style.left = Math.random() * 100 + "vw";
+  el.style.animationDuration = (6 + Math.random() * 6) + "s";
+  el.style.fontSize = (18 + Math.random() * 26) + "px";
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 13000);
+}
+function burst() {
+  for (let i = 0; i < 18; i++) setTimeout(spawnFloating, i * 140);
+}
+
+// ================= STAGE 1: INTRO =================
+let pi = 0;
+typePhrase($("typewriter"), phrases[0]);
+setInterval(() => { pi = (pi + 1) % phrases.length; typePhrase($("typewriter"), phrases[pi]); }, 6000);
+
+const eyeStates = ["😳", "🥺", "😊", "😍"];
+let eyeClicks = 0;
+$("eyes").addEventListener("click", () => {
+  eyeClicks++;
+  $("eyes").textContent = eyeStates[Math.min(eyeClicks, 3)];
+  if (eyeClicks >= 3) {
+    $("eyes").textContent = "😍";
+    document.querySelector("#stage-intro .hint").textContent = "Okay okay, you caught me staring 🫣";
+  }
+  spawnFloating("💗");
+});
+
+$("btnStart").addEventListener("click", () => { startHearts(); showStage(1, "🫀"); });
+
+// ================= STAGE 2: HEART CATCH =================
+function startHearts() {
+  heartCount = 0;
+  heartRemaining = HEART_TIME;
+  $("heartStat").innerHTML = `Hearts: 0/${TARGET_HEARTS} &nbsp;⏱ <span id="heartTimer">${HEART_TIME}</span>s`;
+  $("btnHeartsRetry").classList.add("hidden");
+  $("heartFill").style.width = "100%";
+  const area = $("gameArea");
+  area.innerHTML = "";
+  spawnHeart();
+  clearInterval(heartTimer);
+  heartTimer = setInterval(() => {
+    heartRemaining--;
+    $("heartTimer").textContent = Math.max(0, heartRemaining);
+    $("heartFill").style.width = (heartRemaining / HEART_TIME * 100) + "%";
+    if (heartRemaining <= 0) {
+      clearInterval(heartTimer);
+      if (heartCount < TARGET_HEARTS) {
+        $("btnHeartsRetry").classList.remove("hidden");
+        $("heartStat").innerHTML = `Only ${heartCount} hearts... so close! 🥺`;
+        typePhrase($("heartStat"), "");
+      }
+    }
+  }, 1000);
+}
+
+function spawnHeart() {
+  const area = $("gameArea");
+  if (area.querySelector(".heart") && heartCount < TARGET_HEARTS) {
+    const old = area.querySelector(".heart");
+    old.classList.add("pop");
+    setTimeout(() => old.remove(), 400);
+  }
+  if (heartCount >= TARGET_HEARTS) return;
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+  const rect = area.getBoundingClientRect();
+  heart.style.left = (15 + Math.random() * (rect.width / 2 - 60)) + "px";
+  heart.style.top = (10 + Math.random() * (rect.height - 60)) + "px";
+  heart.addEventListener("click", () => {
+    if (heartCount >= TARGET_HEARTS) return;
+    heartCount++;
+    heart.classList.add("pop");
+    spawnFloating("💖");
+    $("heartStat").innerHTML = `Hearts: ${heartCount}/${TARGET_HEARTS} &nbsp;⏱ <span id="heartTimer">${heartRemaining}</span>s`;
+    if (heartCount >= TARGET_HEARTS) {
+      clearInterval(heartTimer);
+      setTimeout(() => {
+        $("heartStat").textContent = "ALL 10 HEARTS. They're all yours now. 🫀";
+        showStage(2, "🧠");
+        startMemory();
+      }, 600);
+    }
+    setTimeout(() => heart.remove(), 380);
+    spawnHeart();
+  });
+  area.appendChild(heart);
+}
+
+$("btnHeartsRetry").addEventListener("click", startHearts);
+
+// ================= STAGE 3: MEMORY MATCH =================
+const PAIR_EMOJIS = ["💖", "🍒", "💌", "🩷"];
+function startMemory() {
+  matchPairs = 0; matchTries = 0; flipped = []; matchedSet.clear();
+  $("matchStat").textContent = "Pairs found: 0/4  🔄 0 tries";
+  const grid = $("memoryGrid");
+  grid.innerHTML = "";
+  const cards = [...PAIR_EMOJIS, ...PAIR_EMOJIS].sort(() => Math.random() - 0.5);
+  cards.forEach((emoji, i) => {
+    const btn = document.createElement("button");
+    btn.className = "mcard";
+    btn.dataset.emoji = emoji;
+    btn.dataset.index = i;
+    btn.addEventListener("click", () => flipCard(btn));
+    grid.appendChild(btn);
+  });
+}
+
+function flipCard(btn) {
+  if (flipped.length === 2 || btn.classList.contains("flipped") || btn.classList.contains("matched")) return;
+  btn.classList.add("flipped");
+  btn.textContent = btn.dataset.emoji;
+  flipped.push(btn);
+  if (flipped.length === 2) {
+    matchTries++;
+    $("matchTries").textContent = matchTries;
+    const [a, b] = flipped;
+    if (a.dataset.emoji === b.dataset.emoji) {
+      a.classList.add("matched");
+      b.classList.add("matched");
+      matchPairs++;
+      $("matchStat").textContent = `Pairs found: ${matchPairs}/4  🔄 ${matchTries} tries`;
+      flipped = [];
+      spawnFloating("💖");
+      if (matchPairs === 4) {
+        setTimeout(() => {
+          $("matchStat").textContent = matchTries <= 5 ? "FOUR PAIRS in " + matchTries + " tries?! Brains AND beauty. Unfair. 😍" : "Four pairs found — you're unstoppable. 😌";
+          showStage(3, "😌");
+          loadQuestion();
+        }, 700);
+      }
+    } else {
+      setTimeout(() => {
+        a.classList.remove("flipped"); a.textContent = "";
+        b.classList.remove("flipped"); b.textContent = "";
+        flipped = [];
+      }, 800);
+    }
+  }
+}
+
+// ================= STAGE 4: QUESTIONS =================
+function loadQuestion() {
+  const q = questions[qIndex];
+  $("questionText").textContent = q.q;
+  const box = $("optionsBox");
+  box.innerHTML = "";
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent = opt;
+    btn.addEventListener("click", () => {
+      btn.classList.add("correct");
+      [...box.children].forEach(b => b.disabled = true);
+      const resp = q.response;
+      setTimeout(() => {
+        $("questionText").textContent = resp;
+        qIndex++;
+        if (qIndex < questions.length) {
+          box.innerHTML = "";
+          setTimeout(loadQuestion, 1800);
+        } else {
+          box.innerHTML = "";
+          setTimeout(() => {
+            showStage(4, "😍");
+            startFinal();
+          }, 1800);
+        }
+      }, 500);
+    });
+    box.appendChild(btn);
+  });
+}
+
+// ================= STAGE 5: FINAL QUESTION =================
+let fi = 0;
+function startFinal() {
+  maybeEscapes = 0;
+  const btnMaybe = $("btnMaybe");
+  btnMaybe.style.transition = "none";
+  btnMaybe.style.transform = "translateX(-50%)";
+  btnMaybe.style.left = "50%";
+  btnMaybe.style.top = "0";
+  btnMaybe.textContent = "Maybe... 🙈";
+  setTimeout(() => btnMaybe.style.transition = "transform 0.35s ease, left 0.35s ease, top 0.35s ease", 50);
+  typePhrase($("finalTypewriter"), finalLines[0]);
+  const interval = setInterval(() => {
+    fi = (fi + 1) % finalLines.length;
+    typePhrase($("finalTypewriter"), finalLines[fi]);
+  }, 4500);
+  $("btnYesFinal").dataset.interval = interval;
+}
+
+const maybeLines = [
+  "Hmm... let me think 🙈",
+  "Wrong button, cutie 👀",
+  "Nope, still no 🏃‍♀️",
+  "The Maybe button is getting tired... of YOU winning 😏",
+  "Okay seriously — the YES button is prettier 💅"
+];
+
+$("btnMaybe").addEventListener("mouseenter", () => {
+  const zone = document.querySelector(".swing-zone");
+  const rect = zone.getBoundingClientRect();
+  const x = Math.random() * (rect.width - 160) + 10;
+  const y = Math.random() * 40;
+  $("btnMaybe").style.left = x + "px";
+  $("btnMaybe").style.top = y + "px";
+  if (maybeEscapes < maybeLines.length) {
+    $("btnMaybe").textContent = maybeLines[maybeEscapes];
+  }
+  maybeEscapes++;
+  $("finalHint").textContent = "The Maybe button is a professional runner 🏃‍♀️💨";
+});
+
+$("btnMaybe").addEventListener("click", () => {
+  const zone = document.querySelector(".swing-zone");
+  const rect = zone.getBoundingClientRect();
+  $("btnMaybe").style.left = (Math.random() * (rect.width - 160) + 10) + "px";
+  $("btnMaybe").style.top = (Math.random() * 40) + "px";
+  $("btnMaybe").textContent = "You can't catch me 😌";
+  spawnFloating("🏃‍♀️");
+  if (maybeEscapes > 5) {
+    $("finalHint").textContent = "Spoiler: this button will never say yes. The one below it will. Just saying. 👇😏";
+  }
+});
+
+$("btnYesFinal").addEventListener("click", () => {
+  clearInterval($("btnYesFinal").dataset.interval);
+  burst();
+  showStage(5, "🎉");
+  setupUpload();
+});
+
+// ================= STAGE 6: SUCCESS =================
+function setupUpload() {
+  $("uploadArea").style.display = "block";
+  const onGitHubPages = location.hostname.endsWith("github.io");
+  if (onGitHubPages) {
+    $("uploadBox").style.display = "none";
+    $("btnUpload").classList.add("hidden");
+    $("successHint").textContent = "Psst — the upload box lives on your personal link from me. WhatsApp works from anywhere though! 💌";
+  }
+}
+
+$("btnWhatsapp").addEventListener("click", () => {
+  const url = "https://wa.me/" + MY_WHATSAPP + "?text=" + encodeURIComponent("I survived all 5 stages 🎉 Now sending my cutest photos as promised 😌📸");
+  window.open(url, "_blank");
+  spawnFloating("💬");
+});
+
+const uploadBox = $("uploadBox");
+const fileInput = $("fileInput");
+const btnUpload = $("btnUpload");
+const thumbnails = $("thumbnails");
+const uploadStatus = $("uploadStatus");
+
+$("btnOpenUpload").addEventListener("click", () => {
+  if (location.hostname.endsWith("github.io")) {
+    uploadStatus.textContent = "The upload box works on my personal link (your Mac is my server 💻). On this link, use WhatsApp — I'll reply instantly! 💌";
+    uploadStatus.style.display = "block";
+  } else {
+    uploadBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    uploadBox.click();
+  }
+});
+
+uploadBox.addEventListener("click", () => fileInput.click());
+fileInput.addEventListener("change", () => {
+  thumbnails.innerHTML = "";
+  const files = Array.from(fileInput.files).slice(0, 20);
+  if (!files.length) return;
+  files.forEach((file, i) => {
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.style.animation = "pop-in 0.4s ease-out " + (i * 80) + "ms backwards";
+    thumbnails.appendChild(img);
+  });
+  uploadStatus.textContent = files.length === 1
+    ? "One stunning photo chosen 😍 — send it!"
+    : files.length + " beautiful photos chosen 😍 — send them all!";
+  btnUpload.classList.remove("hidden");
+});
+
+btnUpload.addEventListener("click", async () => {
+  if (!fileInput.files.length) return;
+  btnUpload.disabled = true;
+  btnUpload.textContent = "Sending... 💌";
+  const form = new FormData();
+  for (const file of fileInput.files) form.append("photos", file);
+  try {
+    const res = await fetch("/upload", { method: "POST", body: form });
+    const data = await res.json();
+    if (data.ok) {
+      uploadStatus.textContent = "Yayyy, they reached me! 💖 I'm smiling already 😊";
+      btnUpload.textContent = "Sent! 💌";
+      btnUpload.disabled = true;
+      spawnFloating("💌"); spawnFloating("💖");
+    } else {
+      throw new Error("nope");
+    }
+  } catch (e) {
+    uploadStatus.textContent = "This link can't receive uploads — use WhatsApp, I'm right there! 💬😊";
+    btnUpload.disabled = false;
+    btnUpload.textContent = "Send via WhatsApp instead 💬";
+    btnUpload.addEventListener("click", () => {
+      window.open("https://wa.me/" + MY_WHATSAPP, "_blank");
+    });
+  }
+});
+
+// ================= AMBIENT =================
+for (let i = 0; i < 8; i++) setTimeout(spawnFloating, i * 700);
+</script>
+</body>
+</html>
