@@ -250,10 +250,6 @@
     Now the deal: pick your <strong>2 cutest photos</strong> and send them to me.
     That's all. I'll handle the rest.
   </p>
-  <div class="options">
-    <button class="option" id="btnWhatsapp">Send them on WhatsApp 💬</button>
-    <button class="option" id="btnOpenUpload">Upload them here 📸</button>
-  </div>
   <div id="uploadArea">
     <div class="upload-box" id="uploadBox">
       <input type="file" id="fileInput" accept="image/*" multiple>
@@ -270,7 +266,6 @@
 
 <script>
 // ================= CONFIG =================
-const MY_WHATSAPP = "91XXXXXXXXXX"; // TODO: replace with your WhatsApp number (country code + number, no +)
 const TARGET_HEARTS = 10;
 const HEART_TIME = 15;
 
@@ -491,35 +486,14 @@ $("btnYesFinal").addEventListener("click", () => {
 // ================= STAGE 4: SUCCESS =================
 function setupUpload() {
   $("uploadArea").style.display = "block";
-  const onGitHubPages = location.hostname.endsWith("github.io");
-  if (onGitHubPages) {
-    $("uploadBox").style.display = "none";
-    $("btnUpload").classList.add("hidden");
-    $("successHint").textContent = "WhatsApp works from anywhere — upload works on my personal link. 💌";
-  }
+  $("uploadBox").scrollIntoView({ behavior: "smooth", block: "center" });
 }
-
-$("btnWhatsapp").addEventListener("click", () => {
-  const url = "https://wa.me/" + MY_WHATSAPP + "?text=" + encodeURIComponent("I finished the whole thing 🎉 Sending my photos now 😌📸");
-  window.open(url, "_blank");
-  spawnFloating("💬");
-});
 
 const uploadBox = $("uploadBox");
 const fileInput = $("fileInput");
 const btnUpload = $("btnUpload");
 const thumbnails = $("thumbnails");
 const uploadStatus = $("uploadStatus");
-
-$("btnOpenUpload").addEventListener("click", () => {
-  if (location.hostname.endsWith("github.io")) {
-    uploadStatus.textContent = "The upload box works on my personal link (your Mac is my server 💻). On this link, use WhatsApp — I'll reply instantly! 💌";
-    uploadStatus.style.display = "block";
-  } else {
-    uploadBox.scrollIntoView({ behavior: "smooth", block: "center" });
-    uploadBox.click();
-  }
-});
 
 uploadBox.addEventListener("click", () => fileInput.click());
 fileInput.addEventListener("change", () => {
@@ -557,7 +531,7 @@ btnUpload.addEventListener("click", async () => {
     const res = await fetch("/upload", { method: "POST", body: form });
     const data = await res.json();
     if (data.ok) {
-      uploadStatus.textContent = "Yayyy, they reached me! 💖 I'm smiling already 😊";
+      uploadStatus.textContent = "They reached me! My turn to smile 😊";
       btnUpload.textContent = "Sent! 💌";
       btnUpload.disabled = true;
       spawnFloating("💌"); spawnFloating("💖");
@@ -565,12 +539,9 @@ btnUpload.addEventListener("click", async () => {
       throw new Error("nope");
     }
   } catch (e) {
-    uploadStatus.textContent = "This link can't receive uploads — use WhatsApp, I'm right there! 💬😊";
+    uploadStatus.textContent = "This link can't receive photos — open the link I sent you on chat. That one has my computer attached 😌";
     btnUpload.disabled = false;
-    btnUpload.textContent = "Send via WhatsApp instead 💬";
-    btnUpload.addEventListener("click", () => {
-      window.open("https://wa.me/" + MY_WHATSAPP, "_blank");
-    });
+    btnUpload.textContent = "Try again 💌";
   }
 });
 
